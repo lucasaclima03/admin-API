@@ -36,6 +36,6 @@ export class ConteudoService {
   }
 
   remove(id: number) {
-    return `This action removes a #${id} conteudo`;
+    return `This action removes a #${id} conteudo.`;
   }
 }
