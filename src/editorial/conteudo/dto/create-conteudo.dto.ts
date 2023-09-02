@@ -1,4 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
+import { JsonObject } from '@prisma/client/runtime/library';
 
 export class CreateConteudoDto {
   @ApiProperty()
@@ -8,16 +9,16 @@ export class CreateConteudoDto {
   chapeu?: string;
 
   @ApiProperty()
-  resumo: string;
+  resumo?: string;
 
   @ApiProperty()
   materia: string;
 
   @ApiProperty()
-  rascunho: string;
+  rascunho?: number;
 
   @ApiProperty({ default: 0 })
-  conteudoPublicado: number;
+  conteudoPublicado?: number;
 
   @ApiProperty()
   conteudoAberto: number;
@@ -26,23 +27,23 @@ export class CreateConteudoDto {
   categoria: string;
 
   @ApiProperty()
-  disciplina: JSON;
+  disciplina: JsonObject;
 
   @ApiProperty()
-  etapa: JSON;
+  etapa: JsonObject;
 
   @ApiProperty()
-  anoLetivo: JSON;
+  anoLetivo: JsonObject;
 
   @ApiProperty({ required: false })
-  seoTitulo: string;
+  seoTitulo?: string;
 
   @ApiProperty({ required: false })
-  seoDescricao: string;
+  seoDescricao?: string;
 
   @ApiProperty({ required: false })
-  imagemDestaque: string;
+  imagemDestaque?: string;
 
   @ApiProperty({ required: false })
-  imagemThumbnail: string;
+  imagemThumbnail?: string;
 }
