@@ -57,4 +57,7 @@ export class ConteudoEntity implements Conteudo {
 
   @ApiProperty({ required: false, nullable: true })
   atualizadoEm: Date | null;
+
+  @ApiProperty({ required: false, nullable: true })
+  autorId: string | null;
 }
