@@ -6,6 +6,7 @@ import {
   Patch,
   Param,
   Delete,
+  NotFoundException,
 } from '@nestjs/common';
 import { ConteudoService } from './conteudo.service';
 import { CreateConteudoDto } from './dto/create-conteudo.dto';
@@ -38,8 +39,15 @@ export class ConteudoController {
 
   @Get(':id')
   @ApiOkResponse({ type: ConteudoEntity })
-  findOne(@Param('id') id: string) {
-    return this.conteudoService.findOne(id);
+  async findOne(@Param('id') id: string) {
+    const conteudo = await this.conteudoService.findOne(id);
+    if (!conteudo) {
+      throw new NotFoundException(
+        `Não foi possivel encontrar conteúdo com o id: ${id}`,
+      );
+    }
+
+    return conteudo;
   }
 
   @Patch(':id')
