@@ -4,11 +4,56 @@ import { PrismaClient } from '@prisma/client';
 const prisma = new PrismaClient();
 
 async function main() {
+  const usuario1 = await prisma.usuario.upsert({
+    where: {
+      email: 'lucas@email.com',
+    },
+    update: {},
+    create: {
+      email: 'lucas@email.com',
+      nome: 'Lucas Almeida',
+      senha: '123456',
+      admin: 1,
+      autor: 1,
+    },
+  });
+
+  const usuario2 = await prisma.usuario.upsert({
+    where: {
+      email: 'autor@email.com',
+    },
+    update: {},
+    create: {
+      email: 'autor@email.com',
+      nome: 'Machado de Assis',
+      senha: '123456',
+      admin: 0,
+      autor: 1,
+    },
+  });
+
+  const usuario3 = await prisma.usuario.upsert({
+    where: {
+      email: 'autor_externo@email.com',
+    },
+    update: {},
+    create: {
+      email: 'autor_externo@email.com',
+      nome: 'James Hetfield',
+      senha: '123456',
+      admin: 0,
+      autor: 1,
+      autorExterno: 1,
+    },
+  });
+
   const post1 = await prisma.conteudo.upsert({
     where: {
       titulo: 'Utilização de inteligencia artificial nas salas de aula',
     },
-    update: {},
+    update: {
+      idUsuario: usuario2.id,
+    },
     create: {
       titulo: 'Utilização de inteligencia artificial nas salas de aula',
       materia:
@@ -19,6 +64,7 @@ async function main() {
       conteudoAberto: 1,
       etapa: 'Anos Iniciais do Ensino Fundamental',
       disciplina: 'Português',
+      idUsuario: usuario2.id,
     },
   });
 
@@ -26,7 +72,9 @@ async function main() {
     where: {
       titulo: 'Como lidar com turmas com diferentes níveis de aprendizagem',
     },
-    update: {},
+    update: {
+      idUsuario: usuario3.id,
+    },
     create: {
       titulo: 'Como lidar com turmas com diferentes níveis de aprendizagem',
       materia:
@@ -37,10 +85,11 @@ async function main() {
       conteudoPublicado: 1,
       etapa: 'Anos Iniciais do Ensino Fundamental',
       disciplina: 'Português',
+      idUsuario: usuario3.id,
     },
   });
 
-  console.log({ post1, post2 });
+  console.log({ post1, post2, usuario1, usuario2, usuario3 });
 }
 
 main()

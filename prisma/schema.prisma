@@ -13,13 +13,13 @@ datasource db {
 // prisma/schema.prisma
 
 model Conteudo {
-  id                String  @id @default(uuid())
-  titulo            String  @unique
+  id                String   @id @default(uuid())
+  titulo            String   @unique
   chapeu            String?
   resumo            String?
   materia           String
   rascunho          Int?
-  conteudoPublicado Int?    @default(0)
+  conteudoPublicado Int?     @default(0)
   conteudoAberto    Int
   categoria         String
   disciplina        Json
@@ -29,8 +29,24 @@ model Conteudo {
   seoDescricao      String?
   imagemDestaque    String?
   imagemThumbnail   String?
+  usuario           Usuario? @relation(fields: [idUsuario], references: [id])
+  idUsuario         String?
 
   criadoEm     DateTime  @default(now())
   publicadoEm  DateTime?
   atualizadoEm DateTime? @updatedAt
+}
+
+model Usuario {
+  id           String     @id @default(uuid())
+  nome         String
+  email        String     @unique
+  senha        String
+  admin        Int?       @default(0)
+  autor        Int?       @default(0)
+  autorExterno Int?       @default(0)
+  conteudos    Conteudo[]
+
+  criadoEm     DateTime @default(now())
+  atualizadoEm DateTime @updatedAt
 }
