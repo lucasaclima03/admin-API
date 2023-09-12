@@ -30,7 +30,12 @@ export class ConteudoService {
   }
 
   findOne(id: string) {
-    return this.prisma.conteudo.findUnique({ where: { id } });
+    return this.prisma.conteudo.findUnique({
+      where: { id },
+      include: {
+        usuario: true,
+      },
+    });
   }
 
   update(id: string, updateConteudoDto: UpdateConteudoDto) {

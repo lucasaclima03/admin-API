@@ -1,5 +1,6 @@
 import { Conteudo, Prisma } from '@prisma/client';
 import { ApiProperty } from '@nestjs/swagger';
+import { UsuarioEntity } from 'src/modules/usuarios/entities/usuario.entity';
 export class ConteudoEntity implements Conteudo {
   @ApiProperty()
   id: string;
@@ -59,5 +60,15 @@ export class ConteudoEntity implements Conteudo {
   atualizadoEm: Date | null;
 
   @ApiProperty({ required: false, nullable: true })
-  idUsuario: string | null;
+  idUsuario: string;
+
+  @ApiProperty({ required: false, type: UsuarioEntity })
+  usuario?: UsuarioEntity;
+  constructor({ usuario, ...data }: Partial<ConteudoEntity>) {
+    Object.assign(this, data);
+
+    if (usuario) {
+      this.usuario = new UsuarioEntity(usuario);
+    }
+  }
 }

@@ -6,7 +6,6 @@ import {
   Patch,
   Param,
   Delete,
-  NotFoundException,
 } from '@nestjs/common';
 import { ConteudoService } from './conteudo.service';
 import { CreateConteudoDto } from './dto/create-conteudo.dto';
@@ -21,8 +20,10 @@ export class ConteudoController {
 
   @Post()
   @ApiCreatedResponse({ type: ConteudoEntity })
-  create(@Body() createConteudoDto: CreateConteudoDto) {
-    return this.conteudoService.create(createConteudoDto);
+  async create(@Body() createConteudoDto: CreateConteudoDto) {
+    return new ConteudoEntity(
+      await this.conteudoService.create(createConteudoDto),
+    );
   }
 
   @Get()
@@ -33,35 +34,32 @@ export class ConteudoController {
 
   @Get('rascunho')
   @ApiOkResponse({ type: ConteudoEntity, isArray: true })
-  buscarRascunhos() {
-    return this.conteudoService.buscarRascunhos();
+  async buscarRascunhos() {
+    const rascunhos = await this.conteudoService.buscarRascunhos();
+
+    return rascunhos.map((rascunho) => new ConteudoEntity(rascunho));
   }
 
   @Get(':id')
   @ApiOkResponse({ type: ConteudoEntity })
   async findOne(@Param('id') id: string) {
-    const conteudo = await this.conteudoService.findOne(id);
-    if (!conteudo) {
-      throw new NotFoundException(
-        `Não foi possivel encontrar conteúdo com o id: ${id}`,
-      );
-    }
-
-    return conteudo;
+    return new ConteudoEntity(await this.conteudoService.findOne(id));
   }
 
   @Patch(':id')
   @ApiOkResponse({ type: ConteudoEntity })
-  update(
+  async update(
     @Param('id') id: string,
     @Body() updateConteudoDto: UpdateConteudoDto,
   ) {
-    return this.conteudoService.update(id, updateConteudoDto);
+    return new ConteudoEntity(
+      await this.conteudoService.update(id, updateConteudoDto),
+    );
   }
 
   @Delete(':id')
   @ApiOkResponse({ type: ConteudoEntity })
-  remove(@Param('id') id: string) {
-    return this.conteudoService.remove(id);
+  async remove(@Param('id') id: string) {
+    return new ConteudoEntity(await this.conteudoService.remove(id));
   }
 }
