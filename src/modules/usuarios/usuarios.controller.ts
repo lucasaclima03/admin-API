@@ -1,34 +1,65 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Delete,
+} from '@nestjs/common';
 import { UsuariosService } from './usuarios.service';
-import { CreateUsuarioDto } from './dto/create-usuario.dto';
+import { CriarUsuarioDto } from './dto/create-usuario.dto';
 import { UpdateUsuarioDto } from './dto/update-usuario.dto';
+import { ApiCreatedResponse, ApiOkResponse, ApiTags } from '@nestjs/swagger';
+import { UsuarioEntity } from './entities/usuario.entity';
 
 @Controller('usuarios')
+@ApiTags('usuarios')
 export class UsuariosController {
   constructor(private readonly usuariosService: UsuariosService) {}
 
   @Post()
-  create(@Body() createUsuarioDto: CreateUsuarioDto) {
-    return this.usuariosService.create(createUsuarioDto);
+  @ApiCreatedResponse({
+    type: UsuarioEntity,
+  })
+  async create(@Body() createUsuarioDto: CriarUsuarioDto) {
+    return new UsuarioEntity(
+      await this.usuariosService.create(createUsuarioDto),
+    );
   }
 
   @Get()
-  findAll() {
-    return this.usuariosService.findAll();
+  @ApiOkResponse({
+    type: UsuarioEntity,
+  })
+  async findAll() {
+    const usuarios = await this.usuariosService.findAll();
+    return usuarios.map((usuario) => new UsuarioEntity(usuario));
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.usuariosService.findOne(+id);
+  @ApiOkResponse({
+    type: UsuarioEntity,
+  })
+  async findOne(@Param('id') id: string) {
+    return new UsuarioEntity(await this.usuariosService.findOne(id));
   }
 
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updateUsuarioDto: UpdateUsuarioDto) {
-    return this.usuariosService.update(+id, updateUsuarioDto);
+  async update(
+    @Param('id') id: string,
+    @Body() updateUsuarioDto: UpdateUsuarioDto,
+  ) {
+    return new UsuarioEntity(
+      await this.usuariosService.update(id, updateUsuarioDto),
+    );
   }
 
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.usuariosService.remove(+id);
+  @ApiOkResponse({
+    type: UsuarioEntity,
+  })
+  async remove(@Param('id') id: string) {
+    return new UsuarioEntity(await this.usuariosService.remove(id));
   }
 }
